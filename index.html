@@ -12,17 +12,21 @@
             <h1>Breeze App</h1>
 
             <div id="search-container">
-                <input type="text" id="locationInput" placeholder="Enter a location"  />
-                <input type="submit" value="Submit" id="submit"/>
+                <input type="text" id="locationInput" placeholder="Enter city or ZIP code" />
+                <input type="submit" value="Search" id="search" />
             </div>
 
-            <div class="result-container">
-                <p class="location-result">City: Minneapolis</p>
-                <p class="location-degrees">Degrees: 45 F</p>
+            <div id="result-container">
+                <div class="icon-container">
+                    <span class="weather-icon"></span>
+                </div>
+                <div class="content-container">
+                    <p class="location-result">Minneapolis</p>
+                    <p class="location-degrees">Degrees: 45&deg;</p>
+                </div>
             </div>
         </main>
 
-        <script src="index.js"></script>
-    </body>
+        <script src="index.js"></script>     
 </html>
 
