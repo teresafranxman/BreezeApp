@@ -5,17 +5,28 @@
         <meta name="viewport" content="width=device-width, initial-scale=1.0">
         <title>Breeze App</title>
         <link rel="stylesheet" href="styles.css">
-        <script src="index.js"></script>
+        
     </head>
     <body>
         <main>
             <h1>Breeze App</h1>
 
             <div id="search-container">
-                <input type="text" id="locationInput" placeholder="Enter a location" />
-                <input type="submit" value="Submit" />
+                <input type="text" id="locationInput" placeholder="Enter city or ZIP code" />
+                <input type="submit" value="Search" id="search" />
+            </div>
+
+            <div id="result-container">
+                <div class="icon-container">
+                    <span class="weather-icon"></span>
+                </div>
+                <div class="content-container">
+                    <p class="location-result">Minneapolis</p>
+                    <p class="location-degrees">Degrees: 45&deg;</p>
+                </div>
             </div>
         </main>
-    </body>
+
+        <script src="index.js"></script>     
 </html>
 
