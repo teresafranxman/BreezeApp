@@ -63,7 +63,7 @@ function displayWeather(name, temp, wind) {
   childElem.textContent = "";
 
   namePara.textContent = name;
-  tempPara.textContent = temp;
+  tempPara.textContent = temp + "°C";
   windPara.textContent = "Windspeed: " + wind;
 
   namePara.classList.add("location");
