@@ -4,25 +4,45 @@
         <meta charset="UTF-8">
         <meta name="viewport" content="width=device-width, initial-scale=1.0">
         <title>Breeze App</title>
-        <link rel="stylesheet" href="styles.css">
-        
+        <link rel="stylesheet" href="style.css">
+        <link rel="manifest" href="manifest.json">
     </head>
     <body>
         <main>
-            <h1>Welcome to Breeze App</h1>
-
-            <div id="search-container">
-                <input type="text" id="locationInput" placeholder="Enter city or ZIP code" />
-                <input type="submit" value="Search" id="search" />
-            </div>
-            <div id="card" style="display: none;">
-                <div class="icon-container">
-                    <!-- <span class="weather-icon"></span> -->
+            <nav>
+                <button class="toggleDeg" style="display: block;">°C °F</button>
+                <div id="search-container">
+                    <input type="text" id="locationInput" placeholder="Enter city or ZIP code" />
+                    <input type="submit" value="Search" id="search" />
                 </div>
-                <div class="content-container"></div>
-            </div>
+            </nav>
+            <button id="getUserLocation">Get your location</button>
+            <section>
+                <h1>Data-Driven Forecasts You Can Depend On</h1>
+            
+                <ul id="results-container" style="display: none;"></ul>
+                <div id="msg"></div>
+            </section>
+
+            <section>
+                <div id="card" style="display: none;">
+                    <div class="icon-container">
+                        <!-- <span class="weather-icon"></span> -->
+                    </div>
+                    <div class="content-container"></div>
+                </div>
+            </section>
         </main>
 
         <script src="index.js"></script>     
+
+        <script>
+            if ('serviceWorker' in navigator) {
+                navigator.serviceWorker.register('./service-worker.js')
+                .then(() => console.log('✅ Service Worker registered'))
+                .catch(err => console.error('SW registration failed:', err));
+            }
+        </script>
+    </body>
 </html>
 
