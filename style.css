@@ -32,6 +32,8 @@ nav {
 /* Toggle celcius to farenheit button*/
 .toggleDeg {
     width: 5rem;
+    display: flex;
+    justify-content: space-between;
 }
 
 /* Search bar */

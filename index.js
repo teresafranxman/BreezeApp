@@ -4,10 +4,21 @@ const parentElem = document.getElementById("card");
 const resultsList = document.getElementById("results-container");
 const msg = document.getElementById("msg");
 const toggleTempBtn = document.querySelector(".toggleDeg");
-let tempToFar;
-let tempToCel;
+const geoButton = document.getElementById("geoBtn");
+
+window.onload = init;
 
 searchBtn.addEventListener("click", search);
+geoButton.addEventListener("click", getGeoLocation);
+
+function init() {
+  const storedLocation = localStorage.getItem("userLocation");
+  const userCoords = JSON.parse(storedLocation);
+
+  if (storedLocation) {
+    getWeatherData(userCoords[0], userCoords[1], userCoords[2], userCoords[3]);
+  }
+}
 
 // Make a search
 async function search() {
@@ -21,15 +32,53 @@ async function search() {
   }
 
   try {
-    const results = await getGeoLocation(userInput);
+    const results = await getGeoCode(userInput);
     dispLocationRes(results);
   } catch (error) {
     msg.textContent = "Search failed. Try again.";
   }
 }
 
+function getGeoLocation() {
+  let locationArr = [];
+  async function success(position) {
+    const url = `https://api.bigdatacloud.net/data/reverse-geocode-client?latitude=${position.coords.latitude}&longitude=${position.coords.longitude}&localityLanguage=en`;
+    const response = await fetch(url);
+    const data = await response.json();
+
+    getWeatherData(
+      data.principalSubdivision,
+      data.city,
+      data.latitude,
+      data.longitude
+    );
+
+    locationArr.push(
+      data.principalSubdivision,
+      data.city,
+      data.latitude,
+      data.longitude
+    );
+
+    msg.textContent = "";
+
+    localStorage.setItem("userLocation", JSON.stringify(locationArr));
+  }
+
+  function error() {
+    msg.textContent = "Unable to retrieve your location";
+  }
+
+  if (!navigator.geolocation) {
+    msg.textContent = "Geolocation is not supported by your browser";
+  } else {
+    msg.textContent = "Locating...";
+    navigator.geolocation.getCurrentPosition(success, error);
+  }
+}
+
 // Search by CITY or ZIP CODE
-async function getGeoLocation(query) {
+async function getGeoCode(query) {
   const url = `https://geocoding-api.open-meteo.com/v1/search?name=${encodeURIComponent(
     query
   )}&count=10&language=en&format=json`;
@@ -57,7 +106,9 @@ async function getWeatherData(state, name, lat, lon) {
 
 // Display weather data
 function displayWeather(state, name, temp, wind) {
-  const roundTemp = Math.round(temp)
+  let tempToFar;
+  let tempToCel;
+  const roundTemp = Math.round(temp);
 
   const html = `
     <p class="state">${state}</p>
@@ -73,7 +124,7 @@ function displayWeather(state, name, temp, wind) {
   childElem.innerHTML = html;
 
   let tempVal = document.querySelector(".temp");
-  
+
   toggleTempBtn.addEventListener("click", () => {
     if (tempVal.innerText.includes("C")) {
       tempToFar = `${(temp * 9) / 5 + 32}`;
