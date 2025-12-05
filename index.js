@@ -39,6 +39,7 @@ async function search() {
   }
 }
 
+// Geolocation API
 function getGeoLocation() {
   let locationArr = [];
   async function success(position) {
