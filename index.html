@@ -5,14 +5,15 @@
         <meta name="viewport" content="width=device-width, initial-scale=1.0">
         <title>Breeze App</title>
         <link rel="stylesheet" href="style.css">
+        <script src="https://code.iconify.design/iconify-icon/3.0.0/iconify-icon.min.js"></script>
         <!-- <link rel="manifest" href="manifest.json"> -->
     </head>
     <body>
         <nav>
+            <p id="logo">Breeze</p>
             <button class="toggleDeg" style="display: block;">
                 <span>°C</span><span>°F</span>
             </button>
-            <button id="geoBtn">Use location</button>
         </nav>
         <main>
             <section>
@@ -20,11 +21,11 @@
                     <input type="text" id="locationInput" placeholder="Enter city or ZIP code" />
                     <input type="submit" value="Search" id="search" />
                 </div>
-            
+                <button id="geoBtn">Use location</button>
                 <ul id="results-container" style="display: none;"></ul>
                 <div id="msg"></div>
             </section>
-
+            <div>Recently Searched</div>
             <section>
                 <div id="card" style="display: none;">
                     <div class="icon-container">

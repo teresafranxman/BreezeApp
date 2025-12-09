@@ -5,6 +5,7 @@ const resultsList = document.getElementById("results-container");
 const msg = document.getElementById("msg");
 const toggleTempBtn = document.querySelector(".toggleDeg");
 const geoButton = document.getElementById("geoBtn");
+const recentSearches = [];
 
 window.onload = init;
 
@@ -17,25 +18,6 @@ function init() {
 
   if (storedLocation) {
     getWeatherData(userCoords[0], userCoords[1], userCoords[2], userCoords[3]);
-  }
-}
-
-// Make a search
-async function search() {
-  msg.textContent = "";
-  const userInput = userLocation.value.trim();
-
-  if (!userInput) {
-    msg.textContent = "Please enter a city or zipcode";
-    resultsList.innerHTML = "";
-    return;
-  }
-
-  try {
-    const results = await getGeoCode(userInput);
-    dispLocationRes(results);
-  } catch (error) {
-    msg.textContent = "Search failed. Try again.";
   }
 }
 
@@ -78,6 +60,25 @@ function getGeoLocation() {
   }
 }
 
+// Make a search
+async function search() {
+  msg.textContent = "";
+  const userInput = userLocation.value.trim();
+
+  if (!userInput) {
+    msg.textContent = "Please enter a city or zipcode";
+    resultsList.innerHTML = "";
+    return;
+  }
+
+  try {
+    const results = await getGeoCode(userInput);
+    dispLocationRes(results);
+  } catch (error) {
+    msg.textContent = "Search failed. Try again.";
+  }
+}
+
 // Search by CITY or ZIP CODE
 async function getGeoCode(query) {
   const url = `https://geocoding-api.open-meteo.com/v1/search?name=${encodeURIComponent(
@@ -88,12 +89,14 @@ async function getGeoCode(query) {
   if (!response.ok) throw new Error(`Response status: ${response.status}`);
   const data = await response.json();
 
+  console.log(data);
+
   return data.results || [];
 }
 
 // Get weather data using LATITUDE and LONGITUDE
 async function getWeatherData(state, name, lat, lon) {
-  const url = `https://api.open-meteo.com/v1/forecast?latitude=${lat}&longitude=${lon}&current=weather_code,temperature_2m,wind_speed_10m,is_day&timezone=auto`;
+  const url = `https://api.open-meteo.com/v1/forecast?latitude=${lat}&longitude=${lon}&daily=weather_code,temperature_2m_max,temperature_2m_min,apparent_temperature_max,apparent_temperature_min,sunrise,sunset,daylight_duration,sunshine_duration,uv_index_max,uv_index_clear_sky_max,rain_sum,showers_sum,snowfall_sum,precipitation_sum,precipitation_hours,precipitation_probability_max,wind_speed_10m_max,wind_gusts_10m_max,wind_direction_10m_dominant,shortwave_radiation_sum,et0_fao_evapotranspiration&current=temperature_2m,relative_humidity_2m,apparent_temperature,is_day,precipitation,rain,showers,snowfall,weather_code,cloud_cover,pressure_msl,surface_pressure,wind_speed_10m,wind_direction_10m,wind_gusts_10m&timezone=auto`;
   const response = await fetch(url);
 
   if (!response.ok) throw new Error(`Response status: ${response.status}`);
@@ -101,9 +104,27 @@ async function getWeatherData(state, name, lat, lon) {
 
   const temp = data.current.temperature_2m;
   const wind = data.current.wind_speed_10m;
+  const weather_code = data.current.weather_code;
+  console.log(weather_code);
+
+  console.log(data);
 
   displayWeather(state, name, temp, wind);
+  recentlySearched(state, name, temp, weather_code);
 }
+
+function recentlySearched(state, name, temp, weather_code) {
+  recentSearches.push({
+    state: state,
+    city: name,
+    temp: temp,
+    icon: weather_code,
+  });
+
+  localStorage.setItem("recentlySearched", JSON.stringify(recentSearches));
+}
+
+
 
 // Display weather data
 function displayWeather(state, name, temp, wind) {
