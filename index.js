@@ -110,8 +110,6 @@ async function getWeatherData(state, name, lat, lon) {
   const weather_code = data.current.weather_code;
   const icon = weatherIcon(weather_code);
 
-  console.log(data);
-
   displayWeather(state, name, temp, wind, icon);
   recentlySearched(state, name, temp, weather_code);
 }
