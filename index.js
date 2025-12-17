@@ -1,3 +1,5 @@
+window.onload = init;
+
 const userLocation = document.getElementById("locationInput");
 const searchBtn = document.getElementById("search");
 const parentElem = document.getElementById("card");
@@ -5,9 +7,8 @@ const resultsList = document.getElementById("results-container");
 const msg = document.getElementById("msg");
 const toggleTempBtn = document.querySelector(".toggleDeg");
 const geoButton = document.getElementById("geoBtn");
-const recentSearches = [];
-
-window.onload = init;
+const history = document.getElementById("history");
+const iconSVG = document.querySelector(".weather-icon");
 
 searchBtn.addEventListener("click", search);
 geoButton.addEventListener("click", getGeoLocation);
@@ -24,9 +25,13 @@ function init() {
 // Geolocation API
 function getGeoLocation() {
   let locationArr = [];
+
   async function success(position) {
     const url = `https://api.bigdatacloud.net/data/reverse-geocode-client?latitude=${position.coords.latitude}&longitude=${position.coords.longitude}&localityLanguage=en`;
     const response = await fetch(url);
+
+    if (!response.ok) throw new Error(`Response status: ${response.status}`);
+
     const data = await response.json();
 
     getWeatherData(
@@ -89,8 +94,6 @@ async function getGeoCode(query) {
   if (!response.ok) throw new Error(`Response status: ${response.status}`);
   const data = await response.json();
 
-  console.log(data);
-
   return data.results || [];
 }
 
@@ -105,34 +108,81 @@ async function getWeatherData(state, name, lat, lon) {
   const temp = data.current.temperature_2m;
   const wind = data.current.wind_speed_10m;
   const weather_code = data.current.weather_code;
-  console.log(weather_code);
+  const icon = weatherIcon(weather_code);
 
-  console.log(data);
-
-  displayWeather(state, name, temp, wind);
+  displayWeather(state, name, temp, wind, icon);
   recentlySearched(state, name, temp, weather_code);
 }
 
 function recentlySearched(state, name, temp, weather_code) {
-  recentSearches.push({
-    state: state,
-    city: name,
-    temp: temp,
-    icon: weather_code,
+  const obj = { state: state, city: name, temp: temp, icon: weather_code };
+  const recentSearches =
+    JSON.parse(localStorage.getItem("recentlySearched")) || [];
+
+  const found = recentSearches.some(
+    (elem) => elem.state == obj.state && elem.city == obj.city
+  );
+
+  if (!found) {
+    recentSearches.push(obj);
+  }
+
+  recentSearches.map((elem) => {
+    const li = document.createElement("li");
+    li.textContent = `${elem.state + ", " + elem.city + " " + elem.temp}`;
+    history.appendChild(li);
   });
 
   localStorage.setItem("recentlySearched", JSON.stringify(recentSearches));
 }
 
+function weatherIcon(weather_code) {
+  let src;
 
+  switch (true) {
+    case weather_code >= 0 && weather_code <= 1:
+      src = "./assets/images/icon-sunny.webp";
+      break;
+    case weather_code == 2:
+      src = "./assets/images/icon-partly-cloudy.webp";
+      break;
+    case weather_code == 3:
+      src = "./assets/images/icon-overcast.webp";
+      break;
+    case weather_code >= 45 && weather_code <= 48:
+      src = "./assets/images/icon-fog.webp";
+      break;
+    case weather_code >= 51 && weather_code <= 57:
+      src = "./assets/images/icon-drizzle.webp";
+      break;
+    case weather_code >= 61 && weather_code <= 67:
+      src = "./assets/images/icon-rain.webp";
+      break;
+    case weather_code >= 71 && weather_code <= 77:
+      src = "./assets/images/icon-snow.webp";
+      break;
+    case weather_code >= 80 && weather_code <= 82:
+      src = "./assets/images/icon-rain.webp";
+      break;
+    case weather_code >= 85 && weather_code <= 86:
+      src = "./assets/images/icon-snow.webp";
+      break;
+    case weather_code >= 95 && weather_code <= 99:
+      src = "./assets/images/icon-storm.webp";
+      break;
+  }
+
+  return src;
+}
 
 // Display weather data
-function displayWeather(state, name, temp, wind) {
+function displayWeather(state, name, temp, wind, weatherIcon) {
   let tempToFar;
   let tempToCel;
   const roundTemp = Math.round(temp);
 
   const html = `
+    <img class="icon" src=${weatherIcon}>
     <p class="state">${state}</p>
     <p class="city">${name}</p>
     <p class="temp">${roundTemp} °C</p>
