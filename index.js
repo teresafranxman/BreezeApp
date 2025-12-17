@@ -144,7 +144,7 @@ function weatherIcon(weather_code) {
       src = "./assets/images/icon-sunny.webp";
       break;
     case weather_code == 2:
-      src = ".assets/images/icon-partly-cloudy.webp";
+      src = "./assets/images/icon-partly-cloudy.webp";
       break;
     case weather_code == 3:
       src = "./assets/images/icon-overcast.webp";
