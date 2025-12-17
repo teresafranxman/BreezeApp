@@ -1,3 +1,5 @@
+window.onload = init;
+
 const userLocation = document.getElementById("locationInput");
 const searchBtn = document.getElementById("search");
 const parentElem = document.getElementById("card");
@@ -5,9 +7,6 @@ const resultsList = document.getElementById("results-container");
 const msg = document.getElementById("msg");
 const toggleTempBtn = document.querySelector(".toggleDeg");
 const geoButton = document.getElementById("geoBtn");
-const recentSearches = [];
-
-window.onload = init;
 
 searchBtn.addEventListener("click", search);
 geoButton.addEventListener("click", getGeoLocation);
@@ -24,9 +23,13 @@ function init() {
 // Geolocation API
 function getGeoLocation() {
   let locationArr = [];
+
   async function success(position) {
     const url = `https://api.bigdatacloud.net/data/reverse-geocode-client?latitude=${position.coords.latitude}&longitude=${position.coords.longitude}&localityLanguage=en`;
     const response = await fetch(url);
+
+    if (!response.ok) throw new Error(`Response status: ${response.status}`);
+
     const data = await response.json();
 
     getWeatherData(
@@ -89,8 +92,6 @@ async function getGeoCode(query) {
   if (!response.ok) throw new Error(`Response status: ${response.status}`);
   const data = await response.json();
 
-  console.log(data);
-
   return data.results || [];
 }
 
@@ -105,26 +106,26 @@ async function getWeatherData(state, name, lat, lon) {
   const temp = data.current.temperature_2m;
   const wind = data.current.wind_speed_10m;
   const weather_code = data.current.weather_code;
-  console.log(weather_code);
-
-  console.log(data);
 
   displayWeather(state, name, temp, wind);
   recentlySearched(state, name, temp, weather_code);
 }
 
 function recentlySearched(state, name, temp, weather_code) {
-  recentSearches.push({
-    state: state,
-    city: name,
-    temp: temp,
-    icon: weather_code,
-  });
+  const obj = { state: state, city: name, temp: temp, icon: weather_code };
+  const recentSearches =
+    JSON.parse(localStorage.getItem("recentlySearched")) || [];
+
+  const found = recentSearches.some(
+    (elem) => elem.state == obj.state && elem.city == obj.city
+  );
+
+  if (!found) {
+    recentSearches.push(obj);
+  }
 
   localStorage.setItem("recentlySearched", JSON.stringify(recentSearches));
 }
-
-
 
 // Display weather data
 function displayWeather(state, name, temp, wind) {

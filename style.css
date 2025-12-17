@@ -12,6 +12,7 @@ body {
     background-color: #ededed;
     margin: 0;
     font-family: sans-serif;
+    padding: 1em;
 }
 
 main {
@@ -19,7 +20,6 @@ main {
     justify-content: unset;
     flex-direction: column;
     gap: 1em;
-    padding: 1rem;
 }
 
 /* Navigation */
@@ -28,24 +28,34 @@ nav {
     justify-content: space-between;
 }
 
+#logo {
+    font-size: 20px;
+}
 
 /* Toggle celcius to farenheit button*/
 .toggleDeg {
-    width: 5rem;
+    width: 6em;
     display: flex;
     justify-content: space-between;
+    height: 2em;
+    align-items: center;
 }
 
 /* Search bar */
+#search-wrapper {
+    display: flex;
+    height: 2em;
+    gap: 1em;
+    justify-content: center;
+}
+
 #search-container {
     width: 40%;
     display: flex;
     gap: 5px;
-    justify-content: center;
 }
 
 #locationInput {
-    height: 1.5rem;
     width: 100%;
     border: 1px solid rgb(197, 197, 197);
     padding: 14px;
@@ -119,8 +129,12 @@ nav {
 
 /* Media Queries */
 @media (max-width: 875px) {
+    #search-wrapper {
+        justify-content: flex-start;
+    }
+    
     #search-container {
-        width: 100%;
+        width: 70%;
     }
 
     #card {

@@ -1,0 +1,28 @@
+1.	Which feature did you improve this week? Why did you choose it?
+Automatically displaying weather data for a users location after an initital "use location" 
+search request. This feature allows users to see weather data for their location without having 
+to select "use location" every time they open or refresh the page. The function init () uses localStorage 
+to store city, state, latitude, and longitude information and uses it to display it as 
+soon as the app is opened. Additionally, I fixed the navigation bar to include the name of the app and the 
+Celcius to Farenheit toggle button. To improve the UI and follow my figma design, I placed the search button
+and "Use location" button next to one another. Finally, I added a new piece of error handling 
+to the function getGeoLocation to throw a new error if the response fails.
+
+
+2.	What issue or bug did you fix that you are most satisfied with?
+To implement a "history" feature, I created the function recentlySearched()
+which takes in the state, city, temp, and weather code to display a small card 
+with information on previously searched locations. To store this information in localStorage,
+I created the recentSearches array. When I first created this array, I was not checking if the
+array contained items, but only pushing a new object into the array. This was causing the array 
+to "reset" and only show one item that would change after every new search. To fix this,
+I set it equal to "JSON.parse(localStorage.getItem("recentlySearched")) || [];". This change 
+checks if there are any items in the recentSearches array and if there is, add a new object into 
+the array or create a new empty array. 
+
+
+3.	What enhancement do you plan to work on during Week 15?
+I will be improving the history feature to check if a city and state has already been 
+entered into the recentSearches array to prevent duplication. Additionally, I will 
+be updating the UI to follow the design I created in Figma, and adding a new function to display
+different weather icons for the appropriate weather code. 

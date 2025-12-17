@@ -11,21 +11,26 @@
     <body>
         <nav>
             <p id="logo">Breeze</p>
-            <button class="toggleDeg" style="display: block;">
+            <button class="toggleDeg">
                 <span>°C</span><span>°F</span>
             </button>
         </nav>
+        <aside>
+            <ul id="history"></ul>
+        </aside>
         <main>
             <section>
-                <div id="search-container">
-                    <input type="text" id="locationInput" placeholder="Enter city or ZIP code" />
-                    <input type="submit" value="Search" id="search" />
+                <div id="search-wrapper">
+                    <div id="search-container">
+                        <input type="text" id="locationInput" placeholder="Enter city or ZIP code" />
+                        <input type="submit" value="Search" id="search" />
+                    </div>
+                    <button id="geoBtn">Use location</button>
                 </div>
-                <button id="geoBtn">Use location</button>
                 <ul id="results-container" style="display: none;"></ul>
                 <div id="msg"></div>
             </section>
-            <div>Recently Searched</div>
+            
             <section>
                 <div id="card" style="display: none;">
                     <div class="icon-container">
